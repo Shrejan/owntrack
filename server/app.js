@@ -37,7 +37,7 @@ app.post('/location', (req, res) => {
 
 app.get('/locations', (req, res) => {
   res.json(busLocations);
-  console.log("🚍 Current bus locations:", busLocations) ;
+ // console.log("🚍 Current bus locations:", busLocations) ;
 });
 //console.log(busLocations);
 

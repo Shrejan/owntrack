@@ -25,7 +25,7 @@ function App() {
   }, []);
 */
 useEffect(() => {
-  axios.get("http://localhost:3000/locations")
+  axios.get("https://owntrack-backend.onrender.com/locations")
     .then((response) => {
       // If response.data.nf is an object, wrap it in an array
       const data = response.data.nf
