@@ -48,7 +48,7 @@ const Markers = busData.map((bus, index) => ({
 //console.log(busData);
 
   const sarala_icon = new icon({
-    iconUrl: "./sarala_icon.png",
+    iconUrl: "/sarala_icon.png",
     iconSize: [50, 50],
   });
 
