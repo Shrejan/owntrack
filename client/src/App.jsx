@@ -4,30 +4,38 @@ import "./App.css";
 import { icon, marker } from "leaflet";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-//import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 function App() {
   const [lat, setlat] = useState(null);
-  const [long, setlong] = useState(null);
-
- // const socket = io("http://localhost:3000"); // 🔁 Update if using a deployed server
-
+  const [socket, setcocket] = useState();
   const [busData, setBusData] = useState([]);
 
-  /*useEffect(() => {
-    socket.on("bus_data", (data) => {
-
-      setBusData(data);
-    });
-
+  useEffect(() => {
+    const sockets = io("http://localhost:3000");
+    setcocket(sockets);
     return () => {
-      socket.off("bus_data");
+      sockets.disconnect();
     };
   }, []);
-*/
-useEffect(() => {
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("data", (data) => {
+      //console.log("Received data:", data);
+      const arr = Object.values(data);
+      setBusData(arr);
+    });
+    return () => {
+      socket.off("data");
+    };
+  }, [socket]);
+
+  /*useEffect(() => {
   axios.get("https://owntrack-backend.onrender.com/locations")
     .then((response) => {
       // If response.data.nf is an object, wrap it in an array
+      console.log(response.data);
+      
       const data = response.data.nf
         ? Array.isArray(response.data.nf)
           ? response.data.nf
@@ -38,20 +46,19 @@ useEffect(() => {
     .catch((error) => {
       console.error("Error fetching bus data:", error);
     });
-}, []);
-//console.log('the data is',busData);
+}, []);*/
+  console.log('the data is',busData);
 
-const Markers = busData.map((bus, index) => ({
-  geocode: [ bus.lat,bus.lon],
-  popUp: `TID: ${bus.tid}, Battery: ${bus.batt}%, Time: ${bus.created_at}`,
-}));
-//console.log(busData);
+  const Markers = busData.map((bus, index) => ({
+    geocode: [bus.lat, bus.lon],
+    popUp: `TID: ${bus.tid}, Battery: ${bus.batt}%, Time: ${bus.created_at}`,
+  }));
+  //console.log(busData);
 
   const sarala_icon = new icon({
     iconUrl: "/sarala_icon.png",
     iconSize: [50, 50],
   });
-
 
   // console.log(lat, long);
 
@@ -63,10 +70,10 @@ const Markers = busData.map((bus, index) => ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {Markers.map((marker, index) => (
-  <Marker key={index} position={marker.geocode} icon={sarala_icon}>
-    <Popup>{marker.popUp}</Popup>
-  </Marker>
-))}
+          <Marker key={index} position={marker.geocode} icon={sarala_icon}>
+            <Popup>{marker.popUp}</Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </>
   );

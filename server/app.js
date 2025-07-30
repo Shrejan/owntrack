@@ -1,46 +1,32 @@
-// server.js
-/*import express from "express";
-import cors from "cors";
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.post("/esp", (req, res) => {
-  console.log("Message from ESP32:", req.body.msg);
-  if (req.body.msg === "hiii") {
-    res.json({ reply: "led2" });
-  } else {
-    res.json({ reply: "unknown" });
-  }
-});
-app.listen(3000,'0.0.0.0', () => {
-  console.log("Server running on http://192.168.1.12:3000");
-});*/
 
 import express from 'express';
+import { createServer } from "http";
+import { Server } from "socket.io";
 import cors from 'cors';
 const app = express();
 const PORT = 3000;
 app.use(express.json());
 app.use(cors());
-let busLocations = {}; // Store latest locations
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: { origin: "*" },
+});
 
+let busLocations = {}; // Store latest locations
+io.on("connection", (socket) => {
+  console.log("Client connected once");
+  // Only emit on new data, not on every connection
+});
 app.post('/location', (req, res) => {
   const data = req.body;
   // Use a unique key, e.g., tid or _id
   busLocations[data.tid || data._id] = data;
+  // Emit to all clients only when new data is received
   console.log(busLocations);
+  io.emit("data", busLocations);
   res.send("ok");
 });
 
-
-app.get('/locations', (req, res) => {
-  res.json(busLocations);
- // console.log("🚍 Current bus locations:", busLocations) ;
-});
-//console.log(busLocations);
-
-app.listen(PORT,() => {
-  console.log(`Server running at :${PORT}`);
+httpServer.listen(3000, () => {
+  console.log("listening on *:3000");
 });
