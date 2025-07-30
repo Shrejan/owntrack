@@ -24,7 +24,7 @@ app.post('/location', (req, res) => {
   // Emit to all clients only when new data is received
   console.log(busLocations);
   io.emit("data", busLocations);
-  res.send("ok");
+ res.json({ status: "ok" });
 });
 
 httpServer.listen(3000, () => {
