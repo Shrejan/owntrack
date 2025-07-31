@@ -18,7 +18,7 @@ const io = new Server(httpServer, {
 let busLocations =[];
 
 const options = {
-  host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8883",
+  host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud",
   port: 8884,
   protocol: "mqtts",
   username: "hivemq.webclient.1753956973528",
