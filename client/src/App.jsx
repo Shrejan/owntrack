@@ -11,7 +11,11 @@ function App() {
   const [busData, setBusData] = useState([]);
 
   useEffect(() => {
-    const sockets = io(/*"https://owntrack-backend.onrender.com"*/ "http://localhost:3000");
+
+    const sockets = io("https://owntrack-backend.onrender.com");
+
+ //   const sockets = io("https://owntrack-backend.onrender.com");
+
     setcocket(sockets);
     return () => {
       sockets.disconnect();
