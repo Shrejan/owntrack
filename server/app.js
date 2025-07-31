@@ -35,7 +35,7 @@ mqttClient.on("message", (topic, message) => {
     const data = JSON.parse(message.toString());
     if (data._type === "location") {
       busLocations.push(data);
-      // console.log("Received via MQTT:", data);
+       console.log("Received via MQTT:", data);
     }
   } catch (err) {
     console.error("Invalid MQTT message:", err);
@@ -54,7 +54,7 @@ busLocations.push(data);
 });*/
 setInterval(() => {if(busLocations.length > 0)
   {io.emit("data", busLocations);
-  console.log("Emitting bus locations:", busLocations);
+  //console.log("Emitting bus locations:", busLocations);
   busLocations=[];}
 }, 3000); // Emit data every second
 
