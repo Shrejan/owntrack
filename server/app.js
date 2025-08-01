@@ -25,11 +25,16 @@ const options = {
   password: "RLmn1$75,zN2M.w>OWfe",
 };
 const mqttClient = mqtt.connect(options); // Or your broker URL
-
-mqttClient.on("connect", () => {
+try {
+  mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
   mqttClient.subscribe("owntracks/+/+"); // Subscribe to all OwnTracks topics
 });
+} catch (error) {
+  console.error("MQTT connection error:", error);
+  
+}
+
 mqttClient.on("message", (topic, message) => {
   try {
     const data = JSON.parse(message.toString());
