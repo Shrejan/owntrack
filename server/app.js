@@ -33,7 +33,8 @@ const mqttClient = mqtt.connect(options); // Or your broker URL
   console.log("Connected to MQTT broker");
   mqttClient.subscribe("owntracks/+/+"); // Subscribe to all OwnTracks topics
 });
-
+mqttClient.on("error", (err) => {
+  console.error("MQTT connection error:", err); });
 
 mqttClient.on("message", (topic, message) => {
   try {
