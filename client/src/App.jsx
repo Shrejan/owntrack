@@ -50,10 +50,11 @@ function App() {
   return (
     <>
       <MapContainer center={[12.990531074169104, 75.28186271998001]} zoom={13}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+         <TileLayer
+    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    attribution="&copy; Esri, Maxar, Earthstar Geographics"
+    maxZoom={18}
+  />
         {Markers.map((marker, index) => (
           <Marker key={index} position={marker.geocode} icon={sarala_icon}>
             <Popup>{marker.popUp}</Popup>
