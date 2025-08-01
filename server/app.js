@@ -14,34 +14,35 @@ const io = new Server(httpServer, {
 //username : hivemq.webclient.1753956973528
 //paswerd : Gd41aCBcxW,0eA>%2#bM
 
-
-let busLocations =[];
+let busLocations = [];
 
 const options = {
- clientId:'shrejan',
-  port: 8884,
-  protocol: "mqtts",
-  clean : true,
-  reconnectperiod: 1000,
-  connectTimeout: 30 * 1000,
+  clientId: "shrejan",
   username: "hivemq.webclient.1753984224763",
   password: "RLmn1$75,zN2M.w>OWfe",
+  clean: true,
+  reconnectperiod: 1000,
+  connectTimeout: 30 * 1000,
 };
-const mqttClient = mqtt.connect('wss://d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt',options); // Or your broker URL
+const mqttClient = mqtt.connect(
+  "wss://d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt",
+  options
+); // Or your broker URL
 
-  mqttClient.on("connect", () => {
+mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
   mqttClient.subscribe("owntracks/+/+"); // Subscribe to all OwnTracks topics
 });
 mqttClient.on("error", (err) => {
-  console.error("MQTT connection error:", err); });
+  console.error("MQTT connection error:", err);
+});
 
 mqttClient.on("message", (topic, message) => {
   try {
     const data = JSON.parse(message.toString());
     if (data._type === "location") {
       busLocations.push(data);
-       console.log("Received via MQTT:", data);
+      console.log("Received via MQTT:", data);
     }
   } catch (err) {
     console.error("Invalid MQTT message:", err);
@@ -58,13 +59,15 @@ busLocations.push(data);
  
   res.json({ status: "ok" });
 });*/
-setInterval(() => {if(busLocations.length > 0)
-  {io.emit("data", busLocations);
-  //console.log("Emitting bus locations:", busLocations);
-  busLocations=[];}
+setInterval(() => {
+  if (busLocations.length > 0) {
+    io.emit("data", busLocations);
+    //console.log("Emitting bus locations:", busLocations);
+    busLocations = [];
+  }
 }, 3000); // Emit data every second
 
-httpServer.listen(3000,'0.0.0.0', () => {
+httpServer.listen(3000, "0.0.0.0", () => {
   console.log("listening on *:3000");
 });
 /*import express from "express";
