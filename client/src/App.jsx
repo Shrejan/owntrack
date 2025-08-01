@@ -36,7 +36,7 @@ function App() {
 
   const Markers = busData.map((bus, index) => ({
     geocode: [bus.lat, bus.lon],
-    popUp: `TID: ${bus.tid}, Battery: ${bus.batt}%, Time: ${bus.created_at}`,
+    popUp: `acc: ${bus.accuracy}, Battery: ${bus.battery}%, Time: ${bus.timestamp}, SSID: ${bus.ssid}`,
   }));
   //console.log(busData);
 

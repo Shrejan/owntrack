@@ -37,9 +37,9 @@ mqttClient.on("message", (topic, message) => {
   try {
     const datas = JSON.parse(message.toString());
 
-    if (datas && datas.SSID) {
-      const clientId = datas.SSID;
-      data[clientId] = {
+    if (topic) {
+      
+      data[topic] = {
         ssid: datas.SSID,
         topic: topic,
         lat: datas.lat,
@@ -49,7 +49,7 @@ mqttClient.on("message", (topic, message) => {
         timestamp: datas.tst,
       };
 
-      busLocations[clientId] = data[clientId];
+      busLocations[topic] = data[topic];
     } else {
       console.warn("Invalid message: Missing SSID", datas);
     }
@@ -70,7 +70,7 @@ setInterval(() => {
 
   if (allClientData.length > 0) {
     io.emit("data", allClientData);
-    // console.log("Emitting data to clients:", allClientData  );
+    console.log("Emitting data to clients:", allClientData  );
   }
 }, 1000);
 
