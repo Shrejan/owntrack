@@ -18,7 +18,7 @@ const io = new Server(httpServer, {
 let busLocations =[];
 
 const options = {
-  host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt",
+ clientId:'shrejan',
   port: 8884,
   protocol: "mqtts",
   clean : true,
@@ -27,7 +27,7 @@ const options = {
   username: "hivemq.webclient.1753984224763",
   password: "RLmn1$75,zN2M.w>OWfe",
 };
-const mqttClient = mqtt.connect(options); // Or your broker URL
+const mqttClient = mqtt.connect('wss://d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt',options); // Or your broker URL
 
   mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
