@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import mqtt from "mqtt";
+import mqtt, { Client } from "mqtt";
 const app = express();
 const PORT = 3000;
 app.use(express.json());
@@ -18,22 +18,22 @@ const io = new Server(httpServer, {
 let busLocations =[];
 
 const options = {
-  host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud",
+  host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt",
   port: 8884,
   protocol: "mqtts",
+  clean : true,
+  reconnectperiod: 1000,
+  connectTimeout: 30 * 1000,
   username: "hivemq.webclient.1753984224763",
   password: "RLmn1$75,zN2M.w>OWfe",
 };
 const mqttClient = mqtt.connect(options); // Or your broker URL
-try {
+
   mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
   mqttClient.subscribe("owntracks/+/+"); // Subscribe to all OwnTracks topics
 });
-} catch (error) {
-  console.error("MQTT connection error:", error);
-  
-}
+
 
 mqttClient.on("message", (topic, message) => {
   try {
