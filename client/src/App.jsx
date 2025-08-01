@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
 
-    const sockets = io("https://owntrack-backend.onrender.com");
+    const sockets = io("https://owntrack-backend.onrender.com"); // Use your server URL here
 
  //   const sockets = io("https://owntrack-backend.onrender.com");
 
@@ -25,7 +25,7 @@ function App() {
   useEffect(() => {
     if (!socket) return;
     socket.on("data", (data) => {
-      //console.log("Received data:", data);
+     // console.log("Received data:", data);
       const arr = Object.values(data);
       setBusData(arr);
     });
@@ -33,25 +33,6 @@ function App() {
       socket.off("data");
     };
   }, [socket]);
-
-  /*useEffect(() => {
-  axios.get("https://owntrack-backend.onrender.com/locations")
-    .then((response) => {
-      // If response.data.nf is an object, wrap it in an array
-      console.log(response.data);
-      
-      const data = response.data.nf
-        ? Array.isArray(response.data.nf)
-          ? response.data.nf
-          : [response.data.nf]
-        : [];
-      setBusData(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching bus data:", error);
-    });
-}, []);*/
-  console.log('the data is',busData);
 
   const Markers = busData.map((bus, index) => ({
     geocode: [bus.lat, bus.lon],
