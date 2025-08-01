@@ -19,15 +19,12 @@ let busLocations =[];
 
 const options = {
   host: "d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud",
-  port: 8883,
+  port: 8884,
   protocol: "mqtts",
-  username: "hivemq.webclient.1753956973528",
-  password: "Gd41aCBcxW,0eA>%2#bM",
-};
-const mqttClient = mqtt.connect("d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt",{
   username: "hivemq.webclient.1753984224763",
   password: "RLmn1$75,zN2M.w>OWfe",
-}); // Or your broker URL
+};
+const mqttClient = mqtt.connect(options); // Or your broker URL
 
 mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
