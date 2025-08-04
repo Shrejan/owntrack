@@ -7,8 +7,8 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 
-    //   const sockets = io("https://owntrack-backend.onrender.com");
-    const SOCKET_SERVER_URL = 'http://localhost:3000';
+       const SOCKET_SERVER_URL = "https://owntrack-backend.onrender.com";
+    //const SOCKET_SERVER_URL = 'http://localhost:3000';
 
 function App() {
   const [socket, setSocket] = useState(null);
