@@ -5,34 +5,59 @@ import { icon, marker } from "leaflet";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+
+
+    //   const sockets = io("https://owntrack-backend.onrender.com");
+    const SOCKET_SERVER_URL = 'http://localhost:3000';
+
 function App() {
-  const [lat, setlat] = useState(null);
-  const [socket, setcocket] = useState();
+  const [socket, setSocket] = useState(null);
+  const [connected, setConnected] = useState(false);
   const [busData, setBusData] = useState([]);
 
+  // Establish Socket.IO connection on mount
   useEffect(() => {
+    const socketIo = io(SOCKET_SERVER_URL, { transports: ['websocket'] });
+    setSocket(socketIo);
 
-    const sockets = io("https://owntrack-backend.onrender.com"); // Use your server URL here
-
- //   const sockets = io("https://owntrack-backend.onrender.com");
-
-    setcocket(sockets);
     return () => {
-      sockets.disconnect();
+      socketIo.disconnect();
     };
   }, []);
 
+  // Handle connect/disconnect status
   useEffect(() => {
     if (!socket) return;
-    socket.on("data", (data) => {
-     // console.log("Received data:", data);
+
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server');
+      setConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from Socket.IO server');
+      setConnected(false);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, [socket]);
+
+  // Listen for "data" events and update busData
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('data', (data) => {
+      console.log('Received data:', data);
       const arr = Object.values(data);
       setBusData(arr);
     });
-    return () => {
-      socket.off("data");
-    };
+
+    return () => socket.off('data');
   }, [socket]);
+
 
   const Markers = busData.map((bus, index) => ({
     geocode: [bus.lat, bus.lon],
@@ -50,11 +75,16 @@ function App() {
   return (
     <>
       <MapContainer center={[12.990531074169104, 75.28186271998001]} zoom={13}>
-         <TileLayer
-    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-    attribution="&copy; Esri, Maxar, Earthstar Geographics"
-    maxZoom={18}
-  />
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution="&copy; Esri, Maxar, Earthstar Geographics"
+          maxZoom={18}
+        />
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          opacity={0.2}
+          attribution="&copy; OpenStreetMap contributors"
+        />
         {Markers.map((marker, index) => (
           <Marker key={index} position={marker.geocode} icon={sarala_icon}>
             <Popup>{marker.popUp}</Popup>

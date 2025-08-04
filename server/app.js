@@ -21,15 +21,23 @@ const options = {
   reconnectperiod: 1000,
   connectTimeout: 30 * 1000,
 };
-const mqttClient = mqtt.connect(
-  "wss://d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt",
-  options
-);
-mqttClient.on("connect", () => {
-  console.log("Connected to MQTT broker");
-  mqttClient.subscribe("owntracks/+/+");
-});
+const mqttClient = mqtt.connect("wss://d8b8feafe64d4ad98a28e2310525d196.s1.eu.hivemq.cloud:8884/mqtt", options);
+io.on("connection", (socket) => {
+ 
+  mqttClient.subscribe("owntracks/+/+", (e) => {
+     console.log("Subscribed to owntracks/+/+");
+  });
 
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+   mqttClient.unsubscribe("owntracks/+/+", (err) => {
+       console.log("Unsubscribed from owntracks/+/+");
+    });
+  });
+});
+io.on("error", (error) => {
+  console.error("Socket.IO error:", error);
+});
 let busLocations = {};
 const data = {};
 
@@ -58,19 +66,12 @@ mqttClient.on("message", (topic, message) => {
   }
 });
 
-io.on("connection", (socket) => {
-  console.log("Client connected once");
-});
-
-io.on("error", (error) => {
-  console.error("Socket.IO error:", error);
-});
 setInterval(() => {
   const allClientData = Object.values(busLocations);
 
   if (allClientData.length > 0) {
     io.emit("data", allClientData);
-    console.log("Emitting data to clients:", allClientData  );
+   // console.log("Emitting data to clients:", allClientData  );
   }
 }, 1000);
 
