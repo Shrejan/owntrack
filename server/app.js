@@ -70,8 +70,6 @@ setInterval(() => {
 
   if (allClientData.length > 0) {
     io.emit("data", allClientData);
-    // console.log("Emitting data to clients:", allClientData  );
-    console.log("Emitting data to clients:", allClientData  );
   }
 }, 1000);
 

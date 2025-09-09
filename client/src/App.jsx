@@ -50,7 +50,7 @@ function App() {
     if (!socket) return;
 
     socket.on('data', (data) => {
-      console.log('Received data:', data);
+      //console.log('Received data:', data);
       const arr = Object.values(data);
       setBusData(arr);
     });
